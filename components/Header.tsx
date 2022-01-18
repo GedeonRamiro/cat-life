@@ -1,29 +1,42 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import Logo from '../public/images/logo.png'
+import {useRouter} from 'next/router'
 
 type LayoutProps = {
     children: React.ReactNode;
  }
 
 const Header = ({ children }: LayoutProps) => {
+
+    const menuArray = [
+        {href: '/', pathname: '/', name: 'Home'},
+        {href: '/posts', pathname: '/posts', name: 'Conteúdos'},
+        {href: '/sobre', pathname: '/sobre', name: 'Quem somos?'},
+      ]
+    
+
+    const { asPath } = useRouter()
+
     return (
         <>
         <div className="navbar mb-2 shadow-lg bg-amber-400 rounded-t rounded-xl">
             <div className="container mx-auto">
-                <div className="flex-none">
-                    <Image src={Logo} alt='Logo' width={38} height={38} />
-                </div> 
+                <Link href='/'>
+                    <a className="flex-none">
+                        <Image src={Logo} alt='Logo' width={38} height={38} />
+                    </a> 
+                </Link>
                 <div className="flex-1 px-2 mx-2">
                     <div className="items-stretch hidden sm:flex">
-                        <a className="btn btn-ghost btn-sm rounded-btn">
-                            Home
-                        </a> 
-                        <a className="btn btn-ghost btn-sm rounded-btn">
-                            Conteúdos
-                        </a> 
-                        <a className="btn btn-ghost btn-sm rounded-btn">
-                            Quem somos?
-                        </a> 
+                        {menuArray.map(menu => (
+                             <Link href={menu.href}>
+                                <a className={`btn btn-ghost btn-sm rounded-btn no-animation ${menu.href === asPath ? 'bg-amber-500' : ''}` }>
+                                    {menu.name}
+                                </a> 
+                            </Link>
+
+                        ))}
                     </div>
                 </div>     
                 <div className="flex-none">
