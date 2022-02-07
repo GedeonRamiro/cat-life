@@ -78,7 +78,7 @@ const Posts = ({ posts: postsBlog, page, totalPage }: ProstProps) => {
             <div className="container mx-auto">
                 <div className="grid gap-6 my-10 md:my-20 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
                     {posts && posts.map(post => (
-                        <div className="card text-center shadow-2xl mx-2">
+                        <div className="card text-center shadow-2xl mx-2" key={post.slug}>
                             <figure className="px-10">
                             <Image
                                 className="rounded-lg" 

@@ -6,11 +6,6 @@ import { client } from '../utils/prismic-configuration';
 import { RichText } from 'prismic-reactjs';
 
 
-type TcuriositiesCats = {
-  title: string,
-  content: string
-}
-
 type Content = {
   subTitle: string
   title: string
@@ -35,7 +30,7 @@ type ContentPros = {
 } 
 
 
-const Home: NextPage = ( { content, collapses }: ContentPros ) => {
+const Home: NextPage<ContentPros> = ( { content, collapses } ) => {
 
 
   return (
