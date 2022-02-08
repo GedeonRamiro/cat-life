@@ -43,7 +43,7 @@ export default function Post( {post}: PostProps){
                                 <h2 className="card-title mt-4">{post.title}</h2> 
                                 <p>{post.description}</p>
                                 <div className="flex justify-center">
-                                    <Link href='/posts'>
+                                    <Link href={'/posts'}>
                                         <button className="btn mt-4 bg-amber-400 hover:bg-amber-500 border-none">Voltar</button> 
                                     </Link>
                                 </div>

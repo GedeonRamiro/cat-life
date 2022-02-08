@@ -124,8 +124,6 @@ export const getStaticProps: GetStaticProps = async () => {
     }
  ))
 
- console.log(collapses)
-
 
   return {
     props: {

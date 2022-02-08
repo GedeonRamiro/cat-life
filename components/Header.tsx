@@ -32,7 +32,7 @@ const Header = ({ children }: LayoutProps) => {
                             </svg>
                             </label>
                         </div> 
-                        <Link href='/'>
+                        <Link href={'/'}>
                             <a className="flex-none">
                                 <Image src={Logo} alt='Logo' width={38} height={38} />
                             </a> 
