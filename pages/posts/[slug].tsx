@@ -44,7 +44,7 @@ export default function Post( {post}: PostProps){
                                 <p>{post.description}</p>
                                 <div className="flex justify-center">
                                     <Link href={'/posts'}>
-                                        <button className="btn mt-4 bg-amber-400 hover:bg-amber-500 border-none no-animation">Voltar</button> 
+                                        <button className="btn mt-4 bg-amber-400 hover:bg-amber-500 border-none">Voltar</button> 
                                     </Link>
                                 </div>
                             </div>
@@ -52,6 +52,7 @@ export default function Post( {post}: PostProps){
                     </div>        
                 </div>
             </div>
+            <div className="my-10"></div>
         </Header>
     )
 }
