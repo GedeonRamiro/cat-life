@@ -34,7 +34,7 @@ const Home: NextPage<ContentPros> = ( { home, collapses } ) => {
   return (
     <>
     <Head>
-      <title>Apaixonados por cats!!!</title>
+      <title>Apaixonados por cats!</title>
     </Head>
       <Header>
         <main className="container mx-auto">

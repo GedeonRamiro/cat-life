@@ -52,7 +52,7 @@ export default function Post( {post}: PostProps){
                     </div>        
                 </div>
             </div>
-            <div className="my-10"></div>
+            
         </Header>
     )
 }

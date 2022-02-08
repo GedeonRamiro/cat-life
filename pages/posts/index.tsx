@@ -133,7 +133,6 @@ const Posts = ({ posts: postsBlog, page, totalPage }: ProstProps) => {
                         
                     </div>
             </div>
-            <div className="my-10"></div>
     
 
             </Header>
