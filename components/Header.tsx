@@ -73,7 +73,7 @@ const Header = ({ children }: LayoutProps) => {
                         <Link key={index} href={menu.href}>
                             <a className={`btn btn-ghost btn-sm rounded-btn no-animation ${menu.href === asPath ? 'bg-amber-500' : ''}` }>
                                 {menu.name}
-                                        </a> 
+                            </a> 
                         </Link>
                     ))}               
                 </ul>

@@ -5,7 +5,6 @@ import axios from 'axios'
 import { GetStaticProps } from 'next'
 import * as prismic from '@prismicio/client'
 import { client } from '../../utils/prismic-configuration';
-import { RichText } from 'prismic-reactjs';
 import { useState } from 'react'
 import Link from 'next/link'
 
@@ -111,23 +110,23 @@ const Posts = ({ posts: postsBlog, page, totalPage }: ProstProps) => {
                     <div className="flex justify-between sm:mx-0 mx-6 mb-10">
                         {Number(currentPage >= 2) ?  (
                             <div className="btn-group">
-                                <button onClick={ () => navigatePage(1) } className="btn mx-1">«</button> 
+                                <button onClick={ () => navigatePage(1) } className="btn mx-1 no-animation">«</button> 
                                 <button onClick={ () => navigatePage(Number(currentPage - 1))} className="btn">anterior</button>
                             </div>
                         ): (
                             <div className="btn-group">
-                                <button onClick={ () => navigatePage(1) } className="btn mx-1 btn-disabled">«</button> 
+                                <button onClick={ () => navigatePage(1) } className="btn mx-1 btn-disabled no-animation">«</button> 
                                 <button onClick={ () => navigatePage(Number(currentPage - 1)) } className="btn btn-disabled">anterior</button>
                             </div>
                         )}
                         {Number(currentPage < Number(totalPage))  ? (
                              <div className="btn-group">
-                             <button onClick={ () => navigatePage(Number(currentPage + 1)) }  className="btn mx-1">próximo</button> 
+                             <button onClick={ () => navigatePage(Number(currentPage + 1)) }  className="btn mx-1 no-animation">próximo</button> 
                              <button onClick={ () => navigatePage(Number(totalPage)) } className="btn">»</button>
                          </div>
                         ) : (
                             <div className="btn-group">
-                            <button  onClick={ () => navigatePage(Number(currentPage + 1)) } className="btn mx-1 btn-disabled">próximo</button> 
+                            <button  onClick={ () => navigatePage(Number(currentPage + 1)) } className="btn mx-1 btn-disabled no-animation">próximo</button> 
                             <button onClick={ () => navigatePage(Number(totalPage))} className="btn btn-disabled">»</button>
                         </div>
                         )}

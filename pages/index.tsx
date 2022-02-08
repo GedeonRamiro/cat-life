@@ -3,7 +3,6 @@ import  Head  from 'next/head'
 import Header from '../components/Header'
 import * as prismic from '@prismicio/client'
 import { client } from '../utils/prismic-configuration';
-import { RichText } from 'prismic-reactjs';
 
 
 type Home = {
