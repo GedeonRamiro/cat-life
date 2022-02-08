@@ -10,10 +10,10 @@ import { useState } from 'react'
 import Link from 'next/link'
 
 type Post = {
-    slug: string | null
+    slug: string
     title: string
-    description: string
-    cover: string
+    description: string | null
+    cover: { url: string }
     updateAt: string
 }
 
@@ -28,6 +28,7 @@ const Posts = ({ posts: postsBlog, page, totalPage }: ProstProps) => {
     
     const [posts, setPosts] = useState(postsBlog || [])
     const [currentPage, setCurrentPage] = useState(Number(page))
+
 
     const reqPost = async (pageNumber: number) => {
         const response = await client.query(
@@ -48,27 +49,27 @@ const Posts = ({ posts: postsBlog, page, totalPage }: ProstProps) => {
 
         if(response.results.length === 0) return
 
-        const getPosts = response.results.map((post) => {
-            return {
-                slug: post.uid,
-                title: RichText.asText(post.data.title),
-                description: post.data.description.find(content => content.type === 'paragraph')?.text ?? '',
-                cover: post.data.cover.url,
-                updateAt: new Date(post.last_publication_date).toLocaleDateString('pt-BR', {
-                    day: '2-digit',
-                    month: 'long',
-                    year: 'numeric'
-                })
-    
-            }
-        })
+        const getPosts = response.results.map((post) => ({
+        
+            slug: post.uid,
+            title: post.data.title,
+            description: post.data.description,
+            cover: post.data.cover,
+            updateAt: new Date(post.last_publication_date).toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric'
+            })
+        }))
+
+        
 
         setCurrentPage(pageNumber)
-        setPosts(getPosts)
+        setPosts(getPosts as Post[])
 
     } 
 
-
+    
     return (
         <>
             <Head>
@@ -82,7 +83,7 @@ const Posts = ({ posts: postsBlog, page, totalPage }: ProstProps) => {
                             <figure className="px-10">
                             <Image
                                 className="rounded-lg" 
-                                src={post.cover} 
+                                src={post.cover.url} 
                                 alt={post.title}
                                 width={720}
                                 height={410}
@@ -92,10 +93,12 @@ const Posts = ({ posts: postsBlog, page, totalPage }: ProstProps) => {
                                 blurDataURL='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mO8fEOxHgAGnwJNrlOKngAAAABJRU5ErkJggg=='
                             />
                             </figure> 
-                            <div className="card-body">
-                                <h2 className="card-title">{post.title}</h2> 
-                                <p>{post.description}</p>
-                                <span className="mt-4 text-sm fontbold">{post.updateAt}</span> 
+                            <div className="card-body flex justify-between">
+                                <div>
+                                    <h2 className="card-title">{post.title}</h2> 
+                                    <p>{post.description?.slice(0,100) + '...'}</p>
+                                    <span className="mt-4 text-sm font-semibold">{post.updateAt}</span> 
+                                </div>
                                 <div className="justify-center card-actions">
                                     <Link href={`posts/${post.slug}`}>
                                         <button className="btn bg-amber-400 hover:bg-amber-500 border-none">Ver Detalhes</button> 
@@ -143,7 +146,7 @@ export default Posts
 export const getStaticProps: GetStaticProps = async () => {
     
 
-    const response = await client.query(
+    const responsePosts = await client.query(
         prismic.Predicates.at('document.type', 'post'),
         { 
             orderings: ['document.last_publication_date desc'],
@@ -152,28 +155,24 @@ export const getStaticProps: GetStaticProps = async () => {
         },
       );
 
-    const posts = response.results.map((post) => {
-        return {
-            slug: post.uid,
-            title: RichText.asText(post.data.title),
-            //description: RichText.asText(post.data.description),
-            description: post.data.description.find(content => content.type === 'paragraph')?.text ?? '',
-            cover: post.data.cover.url,
-            updateAt: new Date(post.last_publication_date).toLocaleDateString('pt-BR', {
-                day: '2-digit',
-                month: 'long',
-                year: 'numeric'
-            })
-
-        }
-    })
-
-
+    const posts = responsePosts.results.map((post) => ({
+        
+        slug: post.uid,
+        title: post.data.title,
+        description: post.data.description,
+        cover: post.data.cover,
+        updateAt: new Date(post.last_publication_date).toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric'
+        })
+    }))
+    
     return {
         props: {
             posts,
-            page: response.page,
-            totalPage: response.total_pages
+            page: responsePosts.page,
+            totalPage: responsePosts.total_pages
            
         },
         revalidate: 60 * 30 // Atualiza a cada 30min

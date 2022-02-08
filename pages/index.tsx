@@ -6,16 +6,16 @@ import { client } from '../utils/prismic-configuration';
 import { RichText } from 'prismic-reactjs';
 
 
-type Content = {
+type Home = {
   subTitle: string
   title: string
   textInfo: string
-  linkAction: string
-  imagehero: string
+  linkAction: { url: string }
+  imagehero: { url: string }
   titleFooter: string
   textFooter: string
-  linkActionFooter: string
-  imageFooter: string
+  linkActionFooter: { url: string }
+  imageFooter: { url: string }
 }
 
 type Collpase = {
@@ -25,13 +25,12 @@ type Collpase = {
 }
 
 type ContentPros = {
-  content: Content
+  home: Home
   collapses: Collpase[]
 } 
 
 
-const Home: NextPage<ContentPros> = ( { content, collapses } ) => {
-
+const Home: NextPage<ContentPros> = ( { home, collapses } ) => {
 
   return (
     <>
@@ -43,15 +42,15 @@ const Home: NextPage<ContentPros> = ( { content, collapses } ) => {
         <section className="Hero">
           <div className="flex flex-col-reverse md:flex-row items-center my-12 md:my-24">
             <div className="flex flex-col w-full lg:w-1/2 justify-center items-start pt-12 pb-24 px-6">
-              <p className="uppercase tracking-loose">{content.subTitle}</p>
-              <h1 className="font-bold text-3xl my-4">{content.title}</h1>
-              <p className="leading-normal mb-4">{content.textInfo}</p>
-              <a href={content.linkAction}>
+              <p className="uppercase tracking-loose">{home.subTitle}</p>
+              <h1 className="font-bold text-3xl my-4">{home.title}</h1>
+              <p className="leading-normal mb-4">{home.textInfo}</p>
+              <a href={home.linkAction.url}>
                 <button className="btn btn-outline hover:bg-amber-400 hover:border-amber-400">começa agora!</button> 
               </a>
             </div>
             <div className="lg:w-1/2 lg:py-6 text-center mx-6 sm:mx-0">
-              <img src={content.imagehero} className=" rounded-lg shadow-2xl fill-current text-gray-900 lg:w-4/5 mx-auto" /> 
+              <img src={home.imagehero.url} className=" rounded-lg shadow-2xl fill-current text-gray-900 lg:w-4/5 mx-auto" /> 
             </div>
           </div>
         </section>
@@ -74,14 +73,14 @@ const Home: NextPage<ContentPros> = ( { content, collapses } ) => {
         <section className="footer">
         <div className="flex flex-col-reverse md:flex-row items-center">
             <div className="flex flex-col w-full lg:w-1/2 justify-center items-start pt-12 pb-24 px-6">
-              <h1 className="font-bold text-3xl my-4">{content.titleFooter}</h1>
-              <p className="leading-normal mb-4">{content.textFooter}</p>
-              <a href={content.linkActionFooter}>
+              <h1 className="font-bold text-3xl my-4">{home.titleFooter}</h1>
+              <p className="leading-normal mb-4">{home.textFooter}</p>
+              <a href={home.linkActionFooter.url}>
                 <button className="btn btn-outline hover:bg-amber-400 hover:border-amber-400">Acessar conteúdo</button> 
               </a>
             </div>
             <div className="lg:w-1/2 lg:py-6 text-center mx-6 sm:mx-0">
-              <img src={content.imageFooter} className="rounded-lg shadow-2xl fill-current text-gray-900 lg:w-4/5 mx-auto" /> 
+              <img src={home.imageFooter.url} className="rounded-lg shadow-2xl fill-current text-gray-900 lg:w-4/5 mx-auto" /> 
             </div>
           </div>
         </section>    
@@ -96,44 +95,41 @@ export default Home
 export const getStaticProps: GetStaticProps = async () => {
 
   
-  const result = await client.query(
+  const resultHome = await client.query(
     prismic.Predicates.at('document.type', 'home')
   );
 
+ const home = resultHome.results.reduce((acumulador, home) => ({
+        ...acumulador,
+        subTitle: home.data.sub_title,
+        title: home.data.title,
+        textInfo: home.data.text_info,
+        linkAction: home.data.link_action,
+        imagehero: home.data.image_hero,
+        titleFooter:home.data.title_footer,
+        textFooter: home.data.text_footer,
+        linkActionFooter: home.data.link_active_footer,
+        imageFooter: home.data.image_footer,
+  }), {})
 
-  const {
-    sub_title, title, text_info, link_action, image_hero,
-    title_footer, text_footer, link_active_footer, image_footer
-  } = result.results[0].data
-
-  const content = {
-    subTitle: RichText.asText(sub_title),
-    title: RichText.asText(title),
-    textInfo: RichText.asText(text_info),
-    linkAction: link_action.url,
-    imagehero: image_hero.url,
-    titleFooter: RichText.asText(title_footer),
-    textFooter: RichText.asText(text_footer),
-    linkActionFooter: link_active_footer.url,
-    imageFooter: image_footer.url,  
-  }
 
   const resultCollapse = await client.query(
     prismic.Predicates.at('document.type', 'collapse')
   );
 
- const collapses = resultCollapse.results.map((collapse) => {
-    return {
+ const collapses = resultCollapse.results.map((collapse) => ({
         id: collapse.id,
-        title: RichText.asText(collapse.data.title),
-        content: RichText.asText(collapse.data.content),
+        title: collapse.data.title,
+        content: collapse.data.content
     }
-  })
+ ))
+
+ console.log(collapses)
 
 
   return {
     props: {
-      content,
+      home,
       collapses,
     },
     revalidate: 60 * 2 // A cada 2min

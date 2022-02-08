@@ -10,7 +10,7 @@ type PostProps = {
         slug: string,
         title: string
         description: string
-        cover: string
+        cover: { url: string }
         updateAt: Date
     }
 }
@@ -30,7 +30,7 @@ export default function Post( {post}: PostProps){
                                 <figure className='flex justify-center'>
                                     <Image 
                                         className="rounded-lg" 
-                                        src={post.cover} 
+                                        src={post.cover.url} 
                                         alt={post.title} 
                                         objectFit='cover'
                                         width={720} 
@@ -42,9 +42,11 @@ export default function Post( {post}: PostProps){
                                 </figure> 
                                 <h2 className="card-title mt-4">{post.title}</h2> 
                                 <p>{post.description}</p>
-                                <Link href='/posts'>
-                                    <button className="btn mt-4 bg-amber-400 hover:bg-amber-500 border-none">Voltar</button> 
-                                </Link>
+                                <div className="flex justify-center">
+                                    <Link href='/posts'>
+                                        <button className="btn mt-4 bg-amber-400 hover:bg-amber-500 border-none">Voltar</button> 
+                                    </Link>
+                                </div>
                             </div>
                         </div>    
                     </div>        
@@ -60,14 +62,14 @@ export const getServerSideProps: GetServerSideProps = async ({params}) => {
     const { slug }: any = params
 
         try {
-            const response = await client.getByUID('post', String(slug), {})
+            const responsePost = await client.getByUID('post', String(slug), {})
             
             const post = {
                 slug: slug,
-                title: RichText.asText(response.data.title),
-                description: RichText.asText(response.data.description),
-                cover: response.data.cover.url,
-                updateAt: new Date(response.last_publication_date).toLocaleDateString('pt-BR', {
+                title: responsePost.data.title,
+                description: responsePost.data.description,
+                cover: responsePost.data.cover,
+                updateAt: new Date(responsePost.last_publication_date).toLocaleDateString('pt-BR', {
                     day: '2-digit',
                     month: 'long',
                     year: 'numeric',
