@@ -1,8 +1,7 @@
 import  Head  from 'next/head'
 import Header from '../../components/Header'
 import Image from 'next/image'
-import axios from 'axios'
-import { GetStaticProps } from 'next'
+import { GetServerSideProps } from 'next'
 import * as prismic from '@prismicio/client'
 import { client } from '../../utils/prismic-configuration';
 import { useState } from 'react'
@@ -142,9 +141,8 @@ const Posts = ({ posts: postsBlog, page, totalPage }: ProstProps) => {
 
 export default Posts
 
-export const getStaticProps: GetStaticProps = async () => {
+export const  getServerSideProps: GetServerSideProps = async () => {
     
-
     const responsePosts = await client.query(
         prismic.Predicates.at('document.type', 'post'),
         { 
@@ -171,9 +169,7 @@ export const getStaticProps: GetStaticProps = async () => {
         props: {
             posts,
             page: responsePosts.page,
-            totalPage: responsePosts.total_pages
-           
-        },
-        revalidate: 60 * 30 // Atualiza a cada 30min
+            totalPage: responsePosts.total_pages  
+        }
     }
 }
